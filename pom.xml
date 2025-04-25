@@ -15,14 +15,6 @@
   </properties>
 
   <dependencies>
-    <!-- https://mvnrepository.com/artifact/org.testng/testng -->
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <version>7.10.2</version>
-      <scope>test</scope>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/io.rest-assured/rest-assured -->
     <dependency>
       <groupId>io.rest-assured</groupId>
@@ -34,8 +26,15 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.12</version>
       <scope>test</scope>
     </dependency>
+
+<!--   <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>RELEASE</version>
+      <scope>test</scope>
+    </dependency>-->
   </dependencies>
 </project>

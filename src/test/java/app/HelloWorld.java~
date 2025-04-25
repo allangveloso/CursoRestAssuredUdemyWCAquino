@@ -1,0 +1,10 @@
+package app;
+import io.restassured.RestAssured;
+import org.junit.Test;
+
+public class HelloWorld {
+    public void testHelloWorld() {
+    System.out.println("Hello, World!");
+}
+    RestAssured
+}
