@@ -1,6 +1,5 @@
-//*******************************
-//VERSÃO UTILIZADA JUNIT 4.12
-//*******************************
+//JUNIT version 4.12
+//RESTASSURED version 5.5.0
 
 
 package app;

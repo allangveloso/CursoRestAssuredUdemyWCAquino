@@ -1,4 +1,5 @@
 //JUNIT version 4.12
+//RESTASSURED version 5.5.0
 package app;
 
 import java.util.Arrays;
@@ -9,9 +10,9 @@ import org.junit.Test;
 
 import org.hamcrest.Matchers;
 
+import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
@@ -55,7 +56,10 @@ public class JunitHamCrestMatchers_v4_12 {
             .get(baseUri)
         .then()
             .statusCode(200)
-//            .body(Matchers.is("Ola Mundo!"));
-            .body(is("Ola Mundo!"));
+            //.body(Matchers.is("Ola Mundo!"));
+            .body(is("Ola Mundo!"))
+            .body(containsString("Mundo"))
+            .body(is(notNullValue()));
+
     }
 }
