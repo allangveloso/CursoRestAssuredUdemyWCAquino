@@ -1,5 +1,8 @@
 //JUNIT version 4.12
 //RESTASSURED version 5.5.0
+//Pagina para realizar os testes: http://restapi.wcaquino.me/users/
+//Documentacao do hamcrestest: https://hamcrest.org/JavaHamcrest/javadoc/
+
 package app;
 
 import java.util.Arrays;
@@ -8,10 +11,10 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
 
-import org.hamcrest.Matchers;
-
-import static org.hamcrest.Matchers.*;
 import static io.restassured.RestAssured.given;
+
+import org.hamcrest.Matchers;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInAnyOrder.containsInAnyOrder;
@@ -34,7 +37,7 @@ public class JunitHamCrestMatchers_v4_12 {
         Assert.assertThat(128d, Matchers.lessThan(130d));
 
         List<Integer> impares = Arrays.asList(1, 3, 5, 7, 9);
-        //Agora, depois de importar a lib Assert , Matchers
+        //Agora, depois de realizar o import estático da lib Assert e Matchers
         assertThat(impares, hasSize(5));
         assertThat(impares, contains(1, 3, 5, 7, 9));
         assertThat(impares, containsInAnyOrder(5, 3, 7, 9, 1));
