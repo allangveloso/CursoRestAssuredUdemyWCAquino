@@ -5,8 +5,10 @@
 
 package app;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
@@ -15,6 +17,7 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 
+import org.junit.Assert;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -158,8 +161,6 @@ public class UserJsonTest {
                 .body("salary.findAll{it != null}.sum()", is(closeTo(3734.5678f, 0.001)))
                 //Valida a soma de salários, por faixa de tolerância
                 .body("salary.findAll{it != null}.sum()", allOf(greaterThan(3000d), lessThan(5000d)))
-
-
         ;
     }
 
@@ -167,7 +168,7 @@ public class UserJsonTest {
     public void testGetAgesBelow26() {
         Response response = RestAssured.given()
                 .when()
-                .get("http://restapi.wcaquino.me:80/users") // Replace with your actual API endpoint
+                .get(baseUri+"/users")
                 .then()
                 .statusCode(200) // Assert that the status code is OK
                 .extract()
@@ -191,4 +192,22 @@ public class UserJsonTest {
         assertTrue("Expected agesBelow26 to contain 20", agesBelow26.contains(20));
     }
 
+    @Test
+    public void devoUnirJsonPathComJava(){
+        //Vou transformar esta assertiva para Java:
+        //.body("name.findAll{it.startsWith('Maria')}.collect{it.toUpperCase()}.toArray()", allOf(arrayContaining("MARIA JOAQUINA"), arrayWithSize(1)))
+        //Transforma o retorno da requisição num array de strings
+        ArrayList<String> names =
+            given()
+            .when()
+                .get(baseUri+"/users")
+            .then()
+                .statusCode(200)
+                .extract().path("name.findAll{it.startsWith('Maria')}")
+            ;
+        //System.out.println(names);
+        Assert.assertEquals(1, names.size());   //valida que o tamanho do array retornado é de tamanho 1 posição
+        Assert.assertTrue(names.get(0).equalsIgnoreCase("mArIa JoAqUiNa"));
+        Assert.assertEquals(names.get(0).toUpperCase(),"maria joaquina".toUpperCase());
+    }
 }
