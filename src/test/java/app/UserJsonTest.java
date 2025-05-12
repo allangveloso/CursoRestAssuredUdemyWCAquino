@@ -8,7 +8,6 @@ package app;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
@@ -205,7 +204,7 @@ public class UserJsonTest {
                 .statusCode(200)
                 .extract().path("name.findAll{it.startsWith('Maria')}")
             ;
-        //System.out.println(names);
+        System.out.println("O array é composto por: " + names);
         Assert.assertEquals(1, names.size());   //valida que o tamanho do array retornado é de tamanho 1 posição
         Assert.assertTrue(names.get(0).equalsIgnoreCase("mArIa JoAqUiNa"));
         Assert.assertEquals(names.get(0).toUpperCase(),"maria joaquina".toUpperCase());
