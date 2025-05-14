@@ -1,5 +1,6 @@
 //JUNIT version 4.12
 //RESTASSURED version 5.5.0
+//HAMCREST version 4.12
 //Pagina para realizar os testes: http://restapi.wcaquino.me/users/
 //Documentacao do hamcrestest: https://hamcrest.org/JavaHamcrest/javadoc/
 

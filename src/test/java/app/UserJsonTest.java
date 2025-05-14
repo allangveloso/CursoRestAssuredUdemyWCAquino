@@ -47,7 +47,7 @@ public class UserJsonTest {
         assertEquals(new Integer(1), response.path("id"));
         assertEquals(new Integer(1), response.path("%s","id"));
 
-            //jsonpath
+        //jsonpath
         JsonPath jpath = new JsonPath(response.asString());
         assertEquals(1, jpath.getInt("id"));
 
