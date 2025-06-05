@@ -8,12 +8,15 @@ package app;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
 import io.restassured.http.Method;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
+import io.restassured.path.xml.XmlPath;
+
 import static io.restassured.RestAssured.given;
 
 import io.restassured.response.ValidatableResponse;
@@ -81,9 +84,9 @@ public class UserXMLTest {
     @Test
     public void devoTrabalharComXmlAvancado(){
         given()
-                .when()
+        .when()
                 .get(baseUri + "/usersxml")
-                .then()
+        .then()
                 .statusCode(200)
                 //Validar que a quantidade de usuários da listagem = 3
                 .body("users.user.size()", is(3))
@@ -105,10 +108,44 @@ public class UserXMLTest {
                 .body("users.user.salary.find{it != null}.toDouble()", is(1234.5678d)) //o retorno é um double
                 //Validar que o retorno das idades é o dobro do valor da listagem para cada uma delas
                 .body("users.user.age.collect{it.toInteger() * 2}", hasItems(40,50,60)) //o collect faz uma transformação em cima de todo o conjunto
-                //Validar que os nomes que comecem com 'Maria' combinas em upperCase com MARIA JOAQUINA
+                //Validar que os nomes que comecem com 'Maria' combinam em upperCase com MARIA JOAQUINA
                 .body("users.user.name.findAll{it.toString().startsWith('Maria')}.collect{it.toString().toUpperCase()}", is("MARIA JOAQUINA"))
-
-
         ;
+    }
+
+    @Test
+    public void devoFazerPesquisasAvancadasComXmlEJava(){
+            //Que será transformado para Java
+        String path = given()
+        .when()
+            .get(baseUri + "/usersxml")
+        .then()
+            .statusCode(200)
+            //Reduzir a expressão:
+            //.body("users.user.name.findAll{it.toString().startsWith('Maria')}.collect{it.toString().toUpperCase()}", is("MARIA JOAQUINA"))
+            //para
+            .extract().path("users.user.name.findAll{it.toString().startsWith('Maria')}");
+            System.out.println(path.toString())
+            ;
+
+        Assert.assertEquals("MariA Joaquina".toUpperCase(), path.toUpperCase());
+    }
+
+    @Test
+    public void devoFazerPesquisasAvancadasComXmlEJavaComDoisRegistros(){
+        //Que será transformado para Java
+        ArrayList<String> nomes = given()
+            .when()
+                .get(baseUri + "/usersxml")
+            .then()
+                .statusCode(200)
+                //Reduzir a expressão:
+                //.body("users.user.findAll{it.name.toString().contains('n')}.name", hasItems("Maria Joaquina", "Ana Julia"))
+                //para
+                .extract().path("users.user.name.findAll{it.toString().contains('n')}");
+        System.out.println(nomes)
+        ;
+        Assert.assertEquals(2, nomes.size());
+        Assert.assertEquals("MariA Joaquina".toUpperCase(), nomes.get(0).toUpperCase());
     }
 }
