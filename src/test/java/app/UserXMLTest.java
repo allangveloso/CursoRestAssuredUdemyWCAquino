@@ -5,25 +5,15 @@
 
 package app;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
-import io.restassured.RestAssured;
-import io.restassured.http.Method;
-import io.restassured.path.json.JsonPath;
-import io.restassured.response.Response;
 import io.restassured.path.xml.XmlPath;
 
-import static io.restassured.RestAssured.given;
 
-import io.restassured.response.ValidatableResponse;
 import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
+import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
 
 
@@ -134,7 +124,7 @@ public class UserXMLTest {
     @Test
     public void devoFazerPesquisasAvancadasComXmlEJavaComDoisRegistros(){
         //Que será transformado para Java
-        ArrayList<String> nomes = given()
+        XmlPath xmlPath = given()
             .when()
                 .get(baseUri + "/usersxml")
             .then()
@@ -142,10 +132,12 @@ public class UserXMLTest {
                 //Reduzir a expressão:
                 //.body("users.user.findAll{it.name.toString().contains('n')}.name", hasItems("Maria Joaquina", "Ana Julia"))
                 //para
-                .extract().path("users.user.name.findAll{it.toString().contains('n')}");
-        System.out.println(nomes)
-        ;
-        Assert.assertEquals(2, nomes.size());
-        Assert.assertEquals("MariA Joaquina".toUpperCase(), nomes.get(0).toUpperCase());
+                .extract().xmlPath();
+        List<String> nomesComN = xmlPath.getList("users.user.findAll{it.name.toString().contains('n')}.name");
+        System.out.println(nomesComN);
+
+        Assert.assertEquals(2, nomesComN.size());
+        Assert.assertEquals("MariA Joaquina".toUpperCase(), nomesComN.get(0).toUpperCase());
+        Assert.assertTrue("ANA JULIA".equalsIgnoreCase(nomesComN.get(1).toString()));
     }
 }
