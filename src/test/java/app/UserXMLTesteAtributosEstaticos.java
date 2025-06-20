@@ -7,7 +7,12 @@ package app;
 
 import io.restassured.RestAssured;
 
+import io.restassured.builder.RequestSpecBuilder;
+import io.restassured.builder.ResponseSpecBuilder;
+import io.restassured.filter.log.LogDetail;
 import io.restassured.path.xml.XmlPath;
+import io.restassured.specification.RequestSpecification;
+import io.restassured.specification.ResponseSpecification;
 import junit.framework.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -21,18 +26,34 @@ import static org.hamcrest.Matchers.is;
 
 public class UserXMLTesteAtributosEstaticos {
 
+    public static RequestSpecification reqSpec;
+    public static ResponseSpecification resSpec;
+
     @BeforeClass
     public static void setup(){
         RestAssured.baseURI = "https://restapi.wcaquino.me";
        /* RestAssured.port = 443;
         RestAssured.basePath = "";*/
+
+        //Incializando o request e response specification
+        RequestSpecBuilder reqBuilder = new RequestSpecBuilder();
+        reqBuilder.log(LogDetail.ALL);
+        reqSpec = reqBuilder.build();
+
+
+        ResponseSpecBuilder resBuilder = new ResponseSpecBuilder();
+        resBuilder.expectStatusCode(200);
+        resSpec = resBuilder.build();
+
+        //Define essas especificações globais para os logs e status code...
+        //...no lugar de .spec(reqSpec) e .spec(resSpec)
+        RestAssured.requestSpecification = reqSpec;
+        RestAssured.responseSpecification = resSpec;
     }
 
-
-
+    //Esta forma é utilizada para se focar apenas nos recursos, porém o escopo está apenas para este método
     /*@Test
     public void devoTrabalharComConstantesDeConexao(){
-        //Esta forma é utilizada para se focar apenas nos recursos, porém o escopo está apenas para este método
         RestAssured.baseURI = "http://restapi.wcaquino.me";
         RestAssured.port = 80;
         RestAssured.basePath = "/v2";
@@ -43,19 +64,21 @@ public class UserXMLTesteAtributosEstaticos {
                 .get( "/users")
                 .then()
                 .statusCode(200)
-
         ;
     }*/
 
+
+//    A PARTIR DE AQUI, INSERINDO REQUEST/RESPONSE SPECIFICATION
     @Test
     public void devoTrabalharComXML(){
 
         given()
-            .log().all()
+            .spec(reqSpec) //gera um log
         .when()
             .get("/usersXML/3")
         .then()
-                .statusCode(200)
+//                .statusCode(200)
+                .spec(resSpec) //substitui o statuscode(200)
                 .body("user.name", is("Ana Julia"))
                 .body("user.@id", is("3"))
                 .body("user.filhos.name.size()", is(2))
@@ -70,11 +93,13 @@ public class UserXMLTesteAtributosEstaticos {
     @Test
     public void devoTrabalharComXMLNoRaiz(){
         given()
+                //.spec(reqSpec) //substituido por RestAssured.requestSpecification = reqSpec; (linha 50)
                 .when()
                 //Agora faz o teste em cima do conteúdo em XML
                 .get("/usersxml")
                 .then()
-                .statusCode(200)
+//                .statusCode(200)
+//                .spec(resSpec) //substituido por RestAssured.responseSpecification = resSpec; (linha 51)
                 .body("users.user.name", hasItems("João da Silva", "Maria Joaquina", "Ana Julia"))
                 .body("$.user.name", hasItems("João da Silva", "Maria Joaquina", "Ana Julia"))
         ;
