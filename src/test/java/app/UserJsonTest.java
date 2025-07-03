@@ -51,7 +51,7 @@ public class UserJsonTest {
         JsonPath jpath = new JsonPath(response.asString());
         assertEquals(1, jpath.getInt("id"));
 
-        //from
+        //from - aqui usado para extrair o id
         int id = JsonPath.from(response.asString()).getInt("id");
         assertEquals(1,id);
 
@@ -101,9 +101,9 @@ public class UserJsonTest {
     @Test
     public void deveVerificarListaRaiz() {
         given()
-                .when()
+        .when()
                 .get(baseUri + "/users")
-                .then()
+        .then()
                 .statusCode(200)
                 //O $ representa a lista raiz
                 .body("$", hasSize(3))
@@ -122,9 +122,9 @@ public class UserJsonTest {
     public void deveFazerVerificacoesAvancadas() {
 //        System.out.println(RestAssured.request(Method.GET, baseUri + "/users/").asString());
         given()
-                .when()
+        .when()
                     .get(baseUri + "/users")
-                .then()
+        .then()
                 .body("$", hasSize(3))
                 //validar que o tamanho da lista menor/igual a 25 é 2
                 .body("age.findAll{it <= 25}.size()", is(2))
@@ -166,9 +166,9 @@ public class UserJsonTest {
     @Test
     public void testGetAgesBelow26() {
         Response response = RestAssured.given()
-                .when()
+        .when()
                 .get(baseUri+"/users")
-                .then()
+        .then()
                 .statusCode(200) // Assert that the status code is OK
                 .extract()
                 .response();

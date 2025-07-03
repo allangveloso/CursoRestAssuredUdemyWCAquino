@@ -26,10 +26,10 @@ public class UserXMLTest {
     public void devoTrabalharComXMLNoRaiz(){
         //System.out.println(RestAssured.request(Method.GET, baseUri + "/usersxml").asString());
         given()
-                .when()
+        .when()
                 //Agora faz o teste em cima do conteúdo em XML
                 .get(baseUri+"/usersxml")
-                .then()
+        .then()
                 .statusCode(200)
                 .body("users.user.name", hasItems("João da Silva", "Maria Joaquina", "Ana Julia"))
                 .body("$.user.name", hasItems("João da Silva", "Maria Joaquina", "Ana Julia"))
