@@ -20,22 +20,20 @@ public class VerbosTest {
     Response response = RestAssured.given()
 
             .when()
-            .post(baseUri+"/users")
-
+                .post(baseUri+"/users")
             .then()
-            .statusCode(200) // Assert that the status code is OK
+                .statusCode(201) // Assert that the status code is OK
                 .log().all()
-            .statusCode(201)
                 .body("id", is(notNullValue()))
                 .body("name", is("Jose"))
                 .body("age", is(50))
-            .extract()
-            .response();
+                .extract()
+                .response();
     ;
 
-        //from - aqui usado para extrair o id
+/*        //from - aqui usado para extrair o id
         int id = JsonPath.from(response.asString()).getInt("id");
-        System.out.println();
+        System.out.println();*/
 
     }
 
@@ -92,25 +90,59 @@ public class VerbosTest {
 
     @Test
     public void deveCustomizarURL(){
+
+        RestAssured.useRelaxedHTTPSValidation();
+
         given()
                 .log().all()
                 .contentType("application/json")
-                .body("{\"name\": \"Usuario Alterado\", \"age\": 80 }")
-                .pathParam("entidade", "users")
-                .pathParam("userId", 1)
+                .body("{\"name\": \"Usuario Alterado2\", \"age\": 80 }")
+                .pathParam("entidade", "users") //parâmetros "entidade" recebe "users"
+                .pathParam("userId", 1) //parâmetros "userId" recebe 1
         .when()
-                .put("https://restapi.wcaquino.me/users/1")
+                .put("https://restapi.wcaquino.me/{entidade}/{userId}")
         .then()
                 .log().all()
                 .statusCode(200)
                 .body("id", is(1))
-                .body("name", is("Usuario Alterado"))
+                .body("name", is("Usuario Alterado2"))
                 .body("age", is(80))
                 .body("salary", is(1234.5678f))
         ;
     }
 
 
+    @Test
+    public void deveObterOIdCriado(){
 
+        RestAssured.useRelaxedHTTPSValidation();
 
+        String requestBody = " +
+                {\"name\": \"Usuario ID\", \"age\": 30 }";
+             {
+                 \"name\": \"José\",
+                 \"age\": 45
+             }
+            ";
+
+        Response response = given()
+                .log().all()
+                .contentType("application/json")
+                .body("{\"name\": \"Usuario ID\", \"age\": 30 }")
+//                .body(requestBody)
+        .when()
+                .post(baseUri+"/users")
+        .then()
+                .log().all()
+                .statusCode(201)
+                .extract()
+                .response()
+        ;
+
+// Extrai o ID do corpo da resposta
+        int id = response.jsonPath().getInt("id");
+
+        // Exibe o ID
+        System.out.println("ID do registro criado: " + id);
+    }
 }

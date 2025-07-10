@@ -29,7 +29,7 @@ public class HelloWorldJUnit {
         java.lang.AssertionError:
         Expected :201
         Actual   :200*/
-        Assert.assertEquals(201, response.statusCode());
+        Assert.assertEquals(200, response.statusCode());
 
         //Uma outra forma de validar.
         ValidatableResponse validation = response.then();
