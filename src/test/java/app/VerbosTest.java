@@ -117,19 +117,12 @@ public class VerbosTest {
 
         RestAssured.useRelaxedHTTPSValidation();
 
-        String requestBody = " +
-                {\"name\": \"Usuario ID\", \"age\": 30 }";
-             {
-                 \"name\": \"José\",
-                 \"age\": 45
-             }
-            ";
+        String requestBody = "{\"name\": \"Usuario ID\", \"age\": 31 }";
 
         Response response = given()
-                .log().all()
+//                .log().all()
                 .contentType("application/json")
-                .body("{\"name\": \"Usuario ID\", \"age\": 30 }")
-//                .body(requestBody)
+                .body(requestBody)
         .when()
                 .post(baseUri+"/users")
         .then()
@@ -140,7 +133,7 @@ public class VerbosTest {
         ;
 
 // Extrai o ID do corpo da resposta
-        int id = response.jsonPath().getInt("id");
+        long id = response.path("id");
 
         // Exibe o ID
         System.out.println("ID do registro criado: " + id);
