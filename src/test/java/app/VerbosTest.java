@@ -96,11 +96,31 @@ public class VerbosTest {
                 .log().all()
                 .contentType("application/json")
                 .body("{\"name\": \"Usuario Alterado\", \"age\": 80 }")
-                .pathParam("entidade", "users")
-                .pathParam("userId", 1)
         .when()
-                .put("https://restapi.wcaquino.me/users/1")
+                //.put("https://restapi.wcaquino.me/users/1")
+                .put("https://restapi.wcaquino.me/{entidade}/{userId}","users", "1")
         .then()
+                .log().all()
+                .statusCode(200)
+                .body("id", is(1))
+                .body("name", is("Usuario Alterado"))
+                .body("age", is(80))
+                .body("salary", is(1234.5678f))
+        ;
+    }
+
+    @Test
+    public void deveCustomizarURLParte2(){
+        given()
+                .log().all()
+                .contentType("application/json")
+                .body("{\"name\": \"Usuario Alterado\", \"age\": 80 }")
+                .pathParam("entidade","users")
+                .pathParam("userId",1)  //incluídos os parametros aqui e retirados da url
+                .when()
+                //agora, foram retirados os parametros da url ,"users","1", já informados no given()
+                .put("https://restapi.wcaquino.me/{entidade}/{userId}")
+                .then()
                 .log().all()
                 .statusCode(200)
                 .body("id", is(1))
