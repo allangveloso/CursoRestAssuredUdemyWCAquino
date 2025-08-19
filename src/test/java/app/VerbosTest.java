@@ -6,6 +6,10 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import static io.restassured.RestAssured.baseURI;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;
@@ -14,29 +18,23 @@ public class VerbosTest {
 
     String baseUri = "http://restapi.wcaquino.me";
 
+
     @Test
     public void deveSalvarUsuario(){
 
-    Response response = RestAssured.given()
-
-            .when()
-            .post(baseUri+"/users")
-
-            .then()
-            .statusCode(200) // Assert that the status code is OK
-                .log().all()
+        given()
+            .log().all()
+            .contentType("application/json")
+            .body("{ \"name\": \"Jose\", \"age\": 50}")
+        .when()
+                .post(baseUri+"/users")
+        .then()
+            .log().all()
             .statusCode(201)
                 .body("id", is(notNullValue()))
                 .body("name", is("Jose"))
                 .body("age", is(50))
-            .extract()
-            .response();
-    ;
-
-        //from - aqui usado para extrair o id
-        int id = JsonPath.from(response.asString()).getInt("id");
-        System.out.println();
-
+            ;
     }
 
     @Test
@@ -130,7 +128,51 @@ public class VerbosTest {
         ;
     }
 
+    @Test
+    public void deveSalvarUsuarioEObterIdCriado(){
 
+        Response response = RestAssured.given()
+                .contentType("application/json")
+                .body("{ \"name\": \"Jose\", \"age\": 50}")
+                .when()
+                .post(baseUri+"/users")
+                .then()
+                .log().all()
+                .statusCode(201)
+                .body("id", is(notNullValue()))
+                .body("name", is("Jose"))
+                .body("age", is(50))
+                .extract()
+                .response();
+        ;
 
+        //from - aqui usado para extrair o  // necessário validar
+        int id = JsonPath.from(response.asString()).getInt("id");
+        int age = JsonPath.from(response.asString()).getInt("age");
+        String name = JsonPath.from(response.asString()).getString("name");
+        System.out.println("id: "+id);
+        System.out.println("name: "+name);
+        System.out.println("age: "+age);
+    }
 
+    @Test
+    public void deveSalvarUsuarioUsandoMap(){
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("name", "Usuario via map");
+        params.put("age", 25);
+
+        given()
+            .log().all()
+            .contentType("application/json")
+            .body(params)
+        .when()
+            .post(baseUri+"/users")
+        .then()
+            .log().all()
+            .statusCode(201)
+            .body("id", is(notNullValue()))
+            .body("name", is("Usuario via map"))
+            .body("age", is(25))
+        ;
+    }
 }
