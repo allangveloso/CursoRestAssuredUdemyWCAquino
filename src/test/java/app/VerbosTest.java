@@ -155,6 +155,7 @@ public class VerbosTest {
         System.out.println("age: "+age);
     }
 
+    //SERIALIZANDO VIA MAP
     @Test
     public void deveSalvarUsuarioUsandoMap(){
         Map<String, Object> params = new HashMap<String, Object>();
@@ -173,6 +174,26 @@ public class VerbosTest {
             .body("id", is(notNullValue()))
             .body("name", is("Usuario via map"))
             .body("age", is(25))
+        ;
+    }
+
+    //SERIALIZANDO VIA OBJETO
+    @Test
+    public void deveSalvarUsuarioUsandoObjeto(){
+        User user = new User("Usuario via objeto", 35);
+
+        given()
+                .log().all()
+                .contentType("application/json")
+                .body(user)
+        .when()
+                .post(baseUri+"/users")
+        .then()
+                .log().all()
+                .statusCode(201)
+                .body("id", is(notNullValue()))
+                .body("name", is("Usuario via objeto"))
+                .body("age", is(35))
         ;
     }
 }
